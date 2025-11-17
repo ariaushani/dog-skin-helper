@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dog Skin Checker (Prototype)</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 1.5rem;
+      background: #f7f7f7;
+    }
+    h1 {
+      text-align: center;
+    }
+    .card {
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      margin-top: 1rem;
+    }
+    label {
+      display: block;
+      margin-top: 0.75rem;
+      font-weight: 600;
+    }
+    input, select, textarea, button {
+      width: 100%;
+      margin-top: 0.3rem;
+      padding: 0.5rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+    button {
+      margin-top: 1rem;
+      cursor: pointer;
+      border: none;
+      background: #2563eb;
+      color: white;
+      font-weight: 600;
+    }
+    button:hover {
+      background: #1d4ed8;
+    }
+    .note {
+      font-size: 0.85rem;
+      color: #555;
+      margin-top: 0.5rem;
+    }
+    .result {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 8px;
+      background: #e0f2fe;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Dog Skin Checker (Prototype)</h1>
+
+  <div class="card">
+    <p class="note">
+      ⚠️ This is an **early prototype** for educational purposes only.
+      It does **not** give medical advice or a diagnosis.
+    </p>
+
+    <form id="skin-form">
+      <label for="dog-photo">Dog photo</label>
+      <input type="file" id="dog-photo" accept="image/*" required />
+
+      <label for="age">Dog’s age</label>
+      <input type="number" id="age" min="0" step="0.1" placeholder="e.g. 3.5" />
+
+      <label for="breed">Breed (or mix)</label>
+      <input type="text" id="breed" placeholder="e.g. Golden Retriever" />
+
+      <label for="duration">How long has this skin issue been present?</label>
+      <select id="duration">
+        <option value="">Select…</option>
+        <option value="<1w">Less than 1 week</option>
+        <option value="1-4w">1–4 weeks</option>
+        <option value="1-3m">1–3 months</option>
+        <option value=">3m">More than 3 months</option>
+      </select>
+
+      <label for="symptoms">Describe what you see</label>
+      <textarea id="symptoms" placeholder="Redness, itching, hair loss, odor, etc."></textarea>
+
+      <label for="itchiness">Is the dog itchy?</label>
+      <select id="itchiness">
+        <option value="">Select…</option>
+        <option value="none">Not really</option>
+        <option value="mild">Mild</option>
+        <option value="moderate">Moderate</option>
+        <option value="severe">Severe</option>
+      </select>
+
+      <button type="submit">Get a preliminary category</button>
+    </form>
+
+    <div id="result" class="result"></div>
+
+    <p class="note">
+      Next versions of this app will use machine learning and real veterinary
+      guidance. For now, it’s just a structured way to collect information and
+      show example “categories”.
+    </p>
+  </div>
+
+  <script>
+    const form = document.getElementById("skin-form");
+    const resultBox = document.getElementById("result");
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault(); // stop the page from reloading
+
+      const symptoms = document.getElementById("symptoms").value.toLowerCase();
+      const itchiness = document.getElementById("itchiness").value;
+      const duration = document.getElementById("duration").value;
+
+      let possibleCategory = "general skin irritation";
+
+      if (itchiness === "severe") {
+        possibleCategory = "allergic or parasitic itch (e.g. fleas, allergies)";
+      }
+
+      if (symptoms.includes("ring") || symptoms.includes("circle")) {
+        possibleCategory = "ring-shaped lesions (e.g. fungal/dermatophyte)";
+      }
+
+      if (duration === ">3m" && itchiness !== "severe") {
+        possibleCategory = "chronic skin issue (may need long-term management)";
+      }
+
+      resultBox.style.display = "block";
+      resultBox.innerHTML = `
+        <strong>Early prototype output (not medical advice):</strong>
+        <p>Based on what you entered, this could fit the category of
+        <em>${possibleCategory}</em>.</p>
+        <p>Please consult a licensed veterinarian for an actual diagnosis and treatment plan.</p>
+      `;
+    });
+  </script>
+</body>
+</html>
